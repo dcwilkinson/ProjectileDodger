@@ -23,16 +23,45 @@ PROJECTILE_HEIGHT = 20
 PROJECTILE_VEL = 10
 PROJECTILE_RELEASE = 3 # how many projectiles drop at same time
 
+HIT_THRESHOLD = 1
+
+def checkGameOver(hits):
+    gameOver = False
+    if hits >= HIT_THRESHOLD:
+        gameOver = True
+    return gameOver
+
+def gameOverMessage():
+    centreCoords = (WIDTH/2, HEIGHT/2)
+    gameOverText = FONT.render(f"GAME OVER!",1,"white")    
+    WIN.blit(gameOverText,centreCoords)    
+
 def draw(player,elapsedTime,projectiles,hits):
     
     WIN.fill(BGCOLOUR) # make sure fill is called first - otrherwise it fills entire window after other objects rendered
     timeText = FONT.render(f"Time: {round(elapsedTime)}s",1,"white")    
-    hitsText = FONT.render(f"Hits: {hits}",1,"white")
+    hitsText = FONT.render(f"Hits: {hits} / {HIT_THRESHOLD}",1,"white")
     WIN.blit(timeText,(10,10))    
-    WIN.blit(hitsText,(WIDTH - 100,10))
-    pygame.draw.rect(WIN,"red",player) # render player before projectiles, so projectiles overlap player
+    WIN.blit(hitsText,(WIDTH - 130,10))
+    
+    # backup - player as rectangle
+    # pygame.draw.rect(WIN,"red",player) # render player before projectiles, so projectiles overlap player
+    
+    # player with image as avatar
+    catImg = pygame.image.load('assets/catsmall.png')
+    catImg.convert()
+    catImg = pygame.transform.scale(catImg, (PLAYER_WIDTH, PLAYER_HEIGHT)) 
+    catRect = catImg.get_rect()
+    catRect.center = PLAYER_WIDTH/2, PLAYER_HEIGHT/2
+    WIN.blit(catImg, player)
+    pygame.draw.rect(WIN, "red", player, 1)
+    
+    
     for projectile in projectiles:
         pygame.draw.rect(WIN,"blue",projectile)
+    
+    if checkGameOver(hits):
+        gameOverMessage()
     
     pygame.display.update() # not sure if should use .flip here instead
     
@@ -41,6 +70,7 @@ def main():
     run = True
     
     player = pygame.Rect(200,HEIGHT - PLAYER_HEIGHT,PLAYER_WIDTH,PLAYER_HEIGHT)
+    
     clock = pygame.time.Clock()
     startTime = time.time()
     elapsedTime = 0
@@ -49,6 +79,7 @@ def main():
     projectileCount = 0
 
     projectiles = []
+    treats = []
     
     # TODO: when hit = true, spit out a message
     hit = False
@@ -85,10 +116,10 @@ def main():
             
         # TODO: utilise all movement keys as well
         
-        if keys[pygame.K_UP]:
-            player.y -= PLAYER_VEL
-        if keys[pygame.K_DOWN]:
-            player.y += PLAYER_VEL
+        # if keys[pygame.K_UP]:
+        #     player.y -= PLAYER_VEL
+        # if keys[pygame.K_DOWN]:
+        #     player.y += PLAYER_VEL
         
         for projectile in projectiles[:]: # dont modify existing list, just get copy of it
             projectile.y += PROJECTILE_VEL
@@ -99,8 +130,9 @@ def main():
                 hit = True
                 hits += 1
                 break
-        
+            
         draw(player,elapsedTime,projectiles,hits)
+        
     
     pygame.quit()
     
