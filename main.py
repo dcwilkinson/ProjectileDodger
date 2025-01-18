@@ -54,7 +54,7 @@ def draw(player,elapsedTime,projectiles,hits):
     catRect = catImg.get_rect()
     catRect.center = PLAYER_WIDTH/2, PLAYER_HEIGHT/2
     WIN.blit(catImg, player)
-    pygame.draw.rect(WIN, "red", player, 1)
+    # pygame.draw.rect(WIN, "red", player, 1)
     
     
     for projectile in projectiles:
