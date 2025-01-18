@@ -23,7 +23,7 @@ PROJECTILE_HEIGHT = 20
 PROJECTILE_VEL = 10
 PROJECTILE_RELEASE = 3 # how many projectiles drop at same time
 
-HIT_THRESHOLD = 1
+HIT_THRESHOLD = 5
 
 def checkGameOver(hits):
     gameOver = False
